@@ -53,6 +53,7 @@ let button2 = new modules.ButtonClient("button2")
 let button3 = new modules.ButtonClient("button3")
 
 const repaint = () => {
+    console.log(`CFG: ${config}`)
     const pattern = colors[config]
     let str = "setall "
     for (let i = 0; i < pattern.length; i++)
