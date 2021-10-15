@@ -9,15 +9,15 @@ interface HidEvent {
 
 const colors: number[][] = [
     // powerpoint colors
-    [0xfd, 0x40, 0x1e, 0xff, 0xff, 0xff], //[0xfd401e, 0xffffff],
+    [0xfd401e, 0xffffff],
     // teams
-    [0x9b,0x29,0xef,0xff,0xff,0xff],  // [0x9b29ef, 0xffffff],
+     [0x9b29ef, 0xffffff],
     // excel
-    [0x27,0xa7,0x00,0xff,0xff,0xff], //[0x27a700, 0xffffff],
+    [0x27a700, 0xffffff],
     // stack overflow
-    [0xfe,0x94,0x0a],
+    [0xfe940a,0x111111],
     // windows
-    [0xff,0x00,0x00, 0x00,0xff,0x00, 0x00,0x00,0xff, 0xff, 0xff, 0x00]
+    [0xff0000, 0x00ff00, 0x0000ff, 0xffff00]
 ]
 
 const configs: HidEvent[][] = [
@@ -52,22 +52,16 @@ let config = 0;
 let button2 = new modules.ButtonClient("button2")
 let button3 = new modules.ButtonClient("button3")
 
-function runEncoded(prog: string, args?: number[]) {
-    let encoded = jacdac.lightEncode(prog, args)
-    modules.ledPixel1.runProgram(encoded)
-}
-
 const repaint = () => {
     const pattern = colors[config]
-    let pixel = 0;
     let str = "setall "
     for (let i = 0; i < pattern.length; i++)
-        str += pattern[i].toString()
-    modules.ledPixel1.runProgram(jacdac.lightEncode(str, []));
+        str += "# "
+    modules.ledPixel1.runProgram(jacdac.lightEncode(str, pattern));
 }
 
 modules.button1.onDown(() => {
-    config++;
+    config = (config + 1) % configs.length; 
     repaint();
 })
 
@@ -84,5 +78,4 @@ button3.onDown(() => {
     actuate(1);
 })
 
-pause(500);
-repaint();
+modules.ledPixel1.onConnected(()=>repaint())
